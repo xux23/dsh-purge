@@ -9,13 +9,15 @@
 
 | 项 | 值 |
 | --- | --- |
-| 插件版本 | `dsh-purge-community` 1.7.20 |
+| 插件版本 | `dsh-purge-community` 1.8.0 |
 | 声明范围 | `dsh.compatibility.dsh = ">=0.2.1-rc.1 <0.3.0"` |
 | profile | `desktop`、`web` |
 | 逐发行状态字段 | `dsh.compatibility.dshReleases` |
 
 | 宿主发行 | 状态 | 依据 / 备注 |
 | --- | --- | --- |
+| 0.2.2-rc.5 | `compatible` | 真实 `app.asar` 解包副本 88 条补丁 76 applied / 零漂移，二次应用 `wrote 0`；桌面壳 5 条（#45/#46/#82/#83/#84）在 `Resources/app` 布局下命中，`lib/main.js` 的 signal kill / close no-fail v2 / official installer handoff 标记齐全。**Windows 未点「应用」、未重启，不构成"已加载"证据。** |
+| 0.2.2-rc.4 | `compatible` | 同批零漂移、二次应用 `wrote 0`；与 rc.5 只差版本号（63 个目标文件中 60 个字节一致，#7/#8/#21 与 #29 的锚点两边同样命中）。npm 布局无 `lib/main.js`，桌面壳 5 条未在 rc.4 桌面发行上单独复测。 |
 | 0.2.2-rc.3 | `compatible` | 官方 rc.3 隔离副本 86 条补丁 74 applied / 零漂移，二次应用幂等；真实 Host Loader 预设注册通过。**Windows rc.3 未复测补丁。** |
 | 0.2.2-rc.2 | `compatible` | 同上批次验证 |
 | 0.2.2-rc.1 | `compatible` | 仍未完整适配：六项旧补丁 #14/#17/#60/#62/#67/#74 保持原定义未修（见 [§2](#c-boundary)） |
@@ -35,8 +37,9 @@
 - **0.1.5、0.2.0**：低于声明下限 `0.2.1-rc.1`，本仓库没有这两个宿主的适配记录，按**未验证（unknown）**处理。不要凭"更老的宿主应该更简单"推断可用。
 - **0.2.1 系列**：`tool-subagent` 不再接受 `toolFilter`——旧 deny 清单要先转成原生子预设与父工具 `agentPreset` 引用（机制与停止条件见 [troubleshooting §13](troubleshooting.md#t-preset)）。rc.4 未声明；rc.1 / rc.2 / rc.3 / rc.5 已声明 `compatible`。
 - **0.2.2-rc.1**：仍未完整适配。六项旧补丁 #14/#17/#60/#62/#67/#74 保持原定义、尚未修复；原生消息回合契约测试通过，但回调缺少 messages 的异常仍应暴露，不可吞掉错误或丢弃输入。测试范围与未确认事项见 [诊断记录](maintenance-022-diagnostics.md)。
-- **0.2.2-rc.2 / rc.3**：rc.3 是当前首部声明的主验证目标（见 [§1](#c-matrix)）。Windows 上的 rc.3 只做了部分验证——不要写成"Windows 全量通过"。
-- **0.2.2-alpha.2、rc.4**：`unknown`。`unknown` 不是"大概可以"，是"没有证据"。
+- **0.2.2-rc.2 / rc.3 / rc.4 / rc.5**：rc.5 是当前首部声明的主验证目标（见 [§1](#c-matrix)）。它是在真实 `app.asar` 的**解包副本**上验完 88 条补丁的：零漂移、二次应用 `wrote 0`、桌面壳 5 条命中；但本机没有点「应用」也没重启，所以**不要把写盘证据写成"真机已加载"**。Windows 上的 rc.3 只做了部分验证，同样不要写成"Windows 全量通过"。
+- **0.2.2-rc.4**：与 rc.5 同批验过零漂移。它与 rc.5 的差别只有版本号，唯一的内容改动是 rc.4 让 DeepSeek 模型上的搜索默认走 legacy Messages 搜索——`dsh-base/cordis.patch.yml` 少了一行 `searchProvider`，`dsh-tool-web` 多传一个 `llmProvider` 路由参数，本插件 #7/#8/#21/#29 的锚点两边都命中，不需要改补丁。
+- **0.2.2-alpha.2、0.2.1-rc.4**：`unknown`。`unknown` 不是"大概可以"，是"没有证据"。
 - **NEXT 宿主家族**：独立、未验证。包名识别或磁盘写入成功都不构成完整运行兼容证明；#102 的 NEXT 桌面发行版完整兼容仍未确认。
 - 隔离安装测试（含 `scripts/check-architecture-runtime.mjs` 调整测试副本布局的那类）只代表安装路径，不代表模型行为、GUI 功能或宿主补丁全量验收。
 
