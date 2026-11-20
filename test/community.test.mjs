@@ -10,6 +10,7 @@ import {
   requirePatchCompatibility,
   download,
   PACKAGE,
+  QUALIFIED_HOST_VERSIONS,
 } from "../lib/community.js";
 import { atomicCopyFileSync } from "../lib/core.js";
 import { filterDirs } from "../lib/update-install.js";
@@ -649,4 +650,20 @@ test("an installer can initialize a fresh profile manifest", async t => {
   };
   await fixture.manager.install(fixture.candidate);
   assert.deepEqual(JSON.parse(fs.readFileSync(manifest)).dsh.profile.bundles, [PACKAGE]);
+});
+
+// 宿主兼容有两处清单：package.json 的 dshReleases 对外（DSH Store 等），
+// QUALIFIED_HOST_VERSIONS 对内决定 compatibility() 的 level。两者分头维护，
+// 只改一处就会出现"清单说 compatible、面板说未验证"。用测试钉死它们必须一致。
+test("dshReleases and QUALIFIED_HOST_VERSIONS declare the same compatible hosts", () => {
+  const manifest = JSON.parse(fs.readFileSync(path.join(import.meta.dirname, "..", "package.json"), "utf8"));
+  const declared = Object.entries(manifest.dsh.compatibility.dshReleases)
+    .filter(([, level]) => level === "compatible")
+    .map(([version]) => version)
+    .sort();
+  assert.deepEqual(
+    [...QUALIFIED_HOST_VERSIONS].sort(),
+    declared,
+    "QUALIFIED_HOST_VERSIONS 与 package.json dshReleases 的 compatible 集合必须一致",
+  );
 });

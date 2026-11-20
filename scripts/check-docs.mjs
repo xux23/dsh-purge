@@ -8,7 +8,6 @@ const pkg = JSON.parse(read("package.json"));
 const version = pkg.version;
 const notesFirst = read("release-notes.md").split("\n")[0].trim();
 const readme = read("README.md");
-const readmeEn = read("docs/README.en.md");
 const agents = read("AGENTS.md");
 
 const problems = [];
@@ -37,9 +36,6 @@ if (!readme.includes(`**${version}**`)) {
 if (!readme.includes("raw.githubusercontent.com/kingcharleslzy-ai/dsh-purge/master/scripts/install.sh")) {
   problems.push("README.md 缺少安装器下载命令");
 }
-if (!readmeEn.includes(`Current version ${version}`)) {
-  problems.push(`docs/README.en.md 缺少 "Current version ${version}"`);
-}
 if (!agents.includes(`当前版本：**${version}**`)) {
   problems.push(`AGENTS.md 缺少 "当前版本：**${version}**"`);
 }
@@ -50,21 +46,21 @@ const hostLine = readme.match(/适配 \*\*DSH Desktop ([0-9a-z.\-]+)\*\*/i);
 if (!hostLine) problems.push("README.md 缺少「适配 DSH Desktop …」的版本行");
 
 // Copyable release commands must move with the package version, not retain an old TGZ.
-for (const file of ["README.md", "docs/README.en.md"]) {
+for (const file of ["README.md"]) {
   const doc = read(file);
   const links = [...doc.matchAll(/releases\/download\/v([0-9.]+)\/dsh-purge-community-([0-9.]+)\.tgz/g)];
   if (!links.length) problems.push(`${file} 缺少固定版本的官方 CLI 安装来源`);
   for (const [, tag, archive] of links) if (tag !== version || archive !== version)
     problems.push(`${file} CLI 安装链接版本必须为 ${version}`);
 }
-if (/安装器不会改动 DSH 本体|installer leaves DSH itself untouched/.test(readme + readmeEn))
+if (/安装器不会改动 DSH 本体|installer leaves DSH itself untouched/.test(readme))
   problems.push("安装说明不能承诺安装器完全不写宿主目录");
 
 // Historical examples remain intact, with a warning attached to the actual YAML.
 // Parse entries so quote style cannot bypass the guard and prose is not mistaken for config.
 for (const file of ["docs/upstream/README.md", "docs/upstream/README.zh-CN.md"])
   for (const problem of checkInstallExamples(read(file), { archive: true })) problems.push(`${file}: ${problem}`);
-for (const file of ["README.md", "README.zh-CN.md", "docs/README.en.md", "docs/INSTALLATION.md", "docs/MAINTENANCE.md", "AGENTS.md"])
+for (const file of ["README.md", "README.zh-CN.md", "docs/INSTALLATION.md", "docs/MAINTENANCE.md", "AGENTS.md"])
   for (const problem of checkInstallExamples(read(file))) problems.push(`${file}: ${problem}`);
 
 if (problems.length) {
@@ -72,4 +68,4 @@ if (problems.length) {
   for (const p of problems) console.error("  - " + p);
   process.exit(1);
 }
-console.log(`✓ 文档版本一致：${version}（README / release-notes / README.en 均指向该版本）`);
+console.log(`✓ 文档版本一致：${version}（README / release-notes / AGENTS 均指向该版本）`);

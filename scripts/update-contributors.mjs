@@ -50,7 +50,7 @@ const rows = [];
 for (let i = 0; i < cells.length; i += 6) rows.push('  <tr>\n' + cells.slice(i, i + 6).join('\n') + '\n  </tr>');
 const block = `${start}\n<table>\n${rows.join('\n')}\n</table>\n${end}`;
 const writes = [[snapshot, JSON.stringify(people, null, 2) + '\n']];
-for (const name of ['README.md', 'README.zh-CN.md', 'docs/README.en.md']) {
+for (const name of ['README.md', 'README.zh-CN.md']) {
   const file = path.join(root, name), text = fs.readFileSync(file, 'utf8');
   if (text.split(start).length !== 2 || text.split(end).length !== 2 || text.indexOf(end) < text.indexOf(start))
     throw Error(`Missing or duplicate contributor markers in ${name}`);
@@ -61,4 +61,4 @@ for (const [file, text] of writes) {
   if (check) { if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== text) throw Error(`Stale contributor block: ${file}`); }
   else if (!fs.existsSync(file) || fs.readFileSync(file, 'utf8') !== text) fs.writeFileSync(file, text);
 }
-console.log(`${check ? 'Verified' : 'Updated'} ${people.length} contributors across three READMEs`);
+console.log(`${check ? 'Verified' : 'Updated'} ${people.length} contributors across README.md / README.zh-CN.md`);
