@@ -9,7 +9,7 @@
 [![Release](https://img.shields.io/github/v/release/kingcharleslzy-ai/dsh-purge?label=release)](https://github.com/kingcharleslzy-ai/dsh-purge/releases)
 [![Checks](https://github.com/kingcharleslzy-ai/dsh-purge/actions/workflows/community.yml/badge.svg)](https://github.com/kingcharleslzy-ai/dsh-purge/actions/workflows/community.yml)
 
-当前版本 **1.8.0** · 适配 **DSH Desktop 0.2.2-rc.5**（rc.4 / rc.3 / rc.2 / rc.1 / 0.2.1-rc.1 / rc.2 / rc.3 / rc.5 同样通过） · [English](docs/README.en.md)
+当前版本 **1.8.0** · 适配 **DSH Desktop 0.2.2-rc.5**（rc.4 / rc.3 / rc.2 / rc.1 / 0.2.1-rc.1 / rc.2 / rc.3 / rc.5 同样通过）
 
 1.8.0 把 0.2.2-rc.5 / rc.4 纳入已验证宿主：88 条补丁在真实 `app.asar` 解包副本上零漂移、二次应用 `wrote 0`。[发行说明](https://github.com/kingcharleslzy-ai/dsh-purge/releases/tag/v1.8.0)
 
